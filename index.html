@@ -401,6 +401,10 @@ function renderPasses(){
     const chkClose = minusMin(f.std, f.intl?45:20);
     const boarding = minusMin(f.std, 35);
     const rev = f.revised ? `<span class="rev">改 ${f.revised}</span>` : "";
+    // 飛行時間 = 時刻差 − 時差（台中↔宮古島差 1 小時）
+    const naive = (() => { let [a,b]=f.std.split(":").map(Number),[c,d]=f.sta.split(":").map(Number); let m=(c*60+d)-(a*60+b); if(m<0)m+=1440; return m; })();
+    const fly = naive - (f.from.code==="RMQ" ? 60 : -60);
+    const flyTxt = Math.floor(fly/60) + "h" + String(fly%60).padStart(2,"0") + "m";
     return `
     <div class="pass">
       <div class="pass-head">
@@ -409,7 +413,7 @@ function renderPasses(){
       </div>
       <div class="pass-route">
         <div class="ap"><div class="code">${f.from.code}</div><div class="city">${f.from.city}</div></div>
-        <div class="mid"><div class="plane">✈</div><div class="dur">當地時間 · 時差 ${f.from.code==='RMQ'?'+1h':'−1h'}</div></div>
+        <div class="mid"><div class="plane">✈</div><div class="dur">飛行 ${flyTxt}</div><div class="dur">當地時間 · 時差 ${f.from.code==='RMQ'?'+1h':'−1h'}</div></div>
         <div class="ap"><div class="code">${f.to.code}</div><div class="city">${f.to.city}</div></div>
       </div>
       <div class="pass-times">
