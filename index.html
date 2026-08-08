@@ -84,6 +84,83 @@
   nav button.active .ic{transform:translateY(-1px);}
 
   footer{text-align:center;color:var(--sub);font-size:11px;padding:14px;}
+
+  /* ===== 天氣 ===== */
+  .weather-strip{
+    display:flex;gap:8px;overflow-x:auto;padding:2px 4px 8px;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;
+  }
+  .weather-strip::-webkit-scrollbar{display:none;}
+  .wx-day{
+    flex:0 0 auto;width:74px;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:10px 6px;text-align:center;box-shadow:var(--shadow);
+  }
+  .wx-day .d{font-size:11px;color:var(--sub);font-weight:700;}
+  .wx-day .ic{font-size:24px;line-height:1.2;margin:2px 0;}
+  .wx-day .t{font-size:13px;font-weight:800;}
+  .wx-day .t .lo{color:var(--sub);font-weight:600;}
+  .wx-day .p{font-size:10.5px;color:#0284c7;font-weight:700;margin-top:2px;}
+  .wx-note{font-size:11px;color:var(--sub);padding:0 6px 2px;}
+
+  /* ===== 登機證 ===== */
+  .pass{
+    background:var(--card);border-radius:18px;overflow:hidden;
+    box-shadow:0 4px 16px rgba(20,50,70,.10);margin-bottom:14px;
+    border:1px solid var(--line);
+  }
+  .pass-head{
+    background:linear-gradient(120deg,#1a2b4a,#24406e);color:#fff;
+    padding:11px 16px;display:flex;justify-content:space-between;align-items:center;
+  }
+  .pass-head .al{font-size:12px;font-weight:700;letter-spacing:.5px;}
+  .pass-head .fn{font-size:15px;font-weight:800;letter-spacing:1px;}
+  .pass-route{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 18px 12px;
+  }
+  .pass-route .ap{text-align:center;min-width:0;}
+  .pass-route .code{font-size:30px;font-weight:800;line-height:1;color:var(--ink);}
+  .pass-route .city{font-size:11.5px;color:var(--sub);margin-top:3px;white-space:nowrap;}
+  .pass-route .mid{flex:1;text-align:center;color:var(--accent);}
+  .pass-route .mid .plane{font-size:20px;}
+  .pass-route .mid .dur{font-size:10px;color:var(--sub);margin-top:1px;}
+  .pass-times{
+    display:flex;justify-content:space-between;padding:0 18px 12px;
+    font-size:12px;color:var(--sub);
+  }
+  .pass-times b{display:block;color:var(--ink);font-size:15px;font-weight:800;}
+  .pass-times .rev{color:#dc2626;}
+  .pass-alert{
+    margin:0 18px 12px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;
+    border-radius:10px;padding:7px 11px;font-size:11.5px;font-weight:600;
+    display:flex;justify-content:space-between;gap:8px;
+  }
+  .perf{
+    position:relative;border-top:2px dashed var(--line);margin:0 12px;height:0;
+  }
+  .perf::before,.perf::after{
+    content:"";position:absolute;top:-11px;width:20px;height:20px;
+    border-radius:50%;background:var(--bg);border:1px solid var(--line);
+  }
+  .perf::before{left:-22px;}
+  .perf::after{right:-22px;}
+  .pass-fields{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:10px 12px;
+    padding:14px 18px 8px;
+  }
+  .pf{min-width:0;}
+  .pf .k{font-size:10px;color:var(--sub);font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+  .pf .v{font-size:17px;font-weight:800;margin-top:1px;}
+  .pf .v.wait{font-size:12px;font-weight:600;color:var(--sub);}
+  .pass-foot{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:8px 18px 14px;
+  }
+  .barcode{height:34px;flex:1;margin-right:12px;
+    background:repeating-linear-gradient(90deg,#1a2733 0 2px,#fff 2px 4px,#1a2733 4px 7px,#fff 7px 9px);
+    opacity:.85;border-radius:2px;}
+  .pass-foot a{font-size:11px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;}
+  .pass-date{font-size:11px;color:var(--sub);font-weight:600;}
 </style>
 </head>
 <body>
@@ -96,7 +173,13 @@
 <main>
   <!-- 日常 -->
   <section class="panel active" data-panel="spot">
-    <div class="section-title">📍 日常 <span class="count">3</span></div>
+    <div class="section-title">🌤️ 宮古島天氣 <span class="count">8/10–8/14</span></div>
+    <div id="weather" class="weather-strip"><div class="wx-note">天氣載入中…</div></div>
+
+    <div class="section-title">🎫 我的航班</div>
+    <div id="passes"></div>
+
+    <div class="section-title">📍 景點・住宿 <span class="count">3</span></div>
     <div class="grid" id="grid-spot"></div>
   </section>
 
@@ -170,6 +253,137 @@ function render(cat){
     </a>`).join("");
 }
 ["spot","food","sweet"].forEach(render);
+
+/* ================= 航班 / 登機證 ================= */
+// 若之後接上 AeroDataBox 代理，把網址填進 FLIGHT_API（例：Cloudflare Worker）
+// 代理回傳格式：{ "JX308": {scheduledTime, revisedTime, terminal, gate, checkInDesk, baggageBelt}, ... }
+const FLIGHT_API = null;
+
+const FLIGHTS = [
+  { no:"JX308", airline:"STARLUX 星宇航空",
+    from:{code:"RMQ", city:"台中"},          to:{code:"SHI", city:"下地島・宮古島"},
+    date:"2026-08-10", std:"07:20", sta:"09:35", intl:true,
+    terminal:"", gate:"", checkIn:"", belt:"" },
+  { no:"JX309", airline:"STARLUX 星宇航空",
+    from:{code:"SHI", city:"下地島・宮古島"}, to:{code:"RMQ", city:"台中"},
+    date:"2026-08-14", std:"10:35", sta:"11:05", intl:true,
+    terminal:"", gate:"", checkIn:"", belt:"" },
+];
+
+const WK = ["日","一","二","三","四","五","六"];
+function fmtDate(iso){
+  const d = new Date(iso+"T00:00:00");
+  return `${d.getMonth()+1}/${d.getDate()}（${WK[d.getDay()]}）`;
+}
+function minusMin(hhmm, m){
+  let [h,mi] = hhmm.split(":").map(Number);
+  let t = h*60+mi-m; t=(t+1440)%1440;
+  return String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0");
+}
+function durText(std,sta){
+  let [h1,m1]=std.split(":").map(Number),[h2,m2]=sta.split(":").map(Number);
+  let d=(h2*60+m2)-(h1*60+m1); if(d<0)d+=1440;
+  return `約 ${Math.floor(d/60)}h${String(d%60).padStart(2,"0")}m`;
+}
+function fld(k,v){
+  const wait = !v;
+  return `<div class="pf"><div class="k">${k}</div><div class="v ${wait?'wait':''}">${v||'當日更新'}</div></div>`;
+}
+function renderPasses(){
+  const box = document.getElementById("passes");
+  box.innerHTML = FLIGHTS.map(f=>{
+    const chkClose = minusMin(f.std, f.intl?45:20);
+    const boarding = minusMin(f.std, 35);
+    const rev = f.revised ? `<span class="rev">改 ${f.revised}</span>` : "";
+    return `
+    <div class="pass">
+      <div class="pass-head">
+        <span class="al">${f.airline}</span>
+        <span class="fn">${f.no}</span>
+      </div>
+      <div class="pass-route">
+        <div class="ap"><div class="code">${f.from.code}</div><div class="city">${f.from.city}</div></div>
+        <div class="mid"><div class="plane">✈</div><div class="dur">當地時間 · 時差 ${f.from.code==='RMQ'?'+1h':'−1h'}</div></div>
+        <div class="ap"><div class="code">${f.to.code}</div><div class="city">${f.to.city}</div></div>
+      </div>
+      <div class="pass-times">
+        <div>表定起飛<b>${f.std} ${rev}</b></div>
+        <div style="text-align:right">表定抵達<b>${f.sta}</b></div>
+      </div>
+      <div class="pass-alert">
+        <span>🛂 報到截止 ${chkClose}</span>
+        <span>🚪 預估登機 ${boarding}</span>
+      </div>
+      <div class="perf"></div>
+      <div class="pass-fields">
+        ${fld("航廈 Terminal", f.terminal)}
+        ${fld("登機門 Gate", f.gate)}
+        ${fld("報到櫃檯 Check-in", f.checkIn)}
+        ${fld("行李轉檯 Belt", f.belt)}
+      </div>
+      <div class="pass-foot">
+        <div class="barcode"></div>
+        <div style="text-align:right">
+          <div class="pass-date">${fmtDate(f.date)}</div>
+          <a href="https://www.google.com/search?q=${f.no}+flight+status" target="_blank" rel="noopener">航班動態 ›</a>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+async function loadFlights(){
+  if(FLIGHT_API){
+    try{
+      const r = await fetch(FLIGHT_API,{cache:"no-store"});
+      const live = await r.json();
+      FLIGHTS.forEach(f=>{
+        const d = live[f.no]; if(!d) return;
+        if(d.scheduledTime) f.std = d.scheduledTime;
+        if(d.revisedTime)   f.revised = d.revisedTime;
+        if(d.terminal)      f.terminal = d.terminal;
+        if(d.gate)          f.gate = d.gate;
+        if(d.checkInDesk)   f.checkIn = d.checkInDesk;
+        if(d.baggageBelt)   f.belt = d.baggageBelt;
+      });
+    }catch(e){ /* 靜默失敗，保留表定值 */ }
+  }
+  renderPasses();
+}
+loadFlights();
+
+/* ================= 天氣（Open-Meteo，免金鑰即時） ================= */
+const WMO = {
+  0:["☀️","晴"],1:["🌤️","晴時多雲"],2:["⛅","多雲"],3:["☁️","陰"],
+  45:["🌫️","霧"],48:["🌫️","霧"],
+  51:["🌦️","毛毛雨"],53:["🌦️","小雨"],55:["🌧️","雨"],
+  61:["🌧️","小雨"],63:["🌧️","中雨"],65:["🌧️","大雨"],
+  80:["🌦️","陣雨"],81:["🌦️","陣雨"],82:["⛈️","強陣雨"],
+  95:["⛈️","雷雨"],96:["⛈️","雷雨冰雹"],99:["⛈️","強雷雨"]
+};
+async function loadWeather(){
+  const el = document.getElementById("weather");
+  const url = "https://api.open-meteo.com/v1/forecast?latitude=24.805&longitude=125.281"
+    +"&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max"
+    +"&timezone=Asia%2FTokyo&start_date=2026-08-10&end_date=2026-08-14";
+  try{
+    const r = await fetch(url,{cache:"no-store"});
+    const j = await r.json();
+    const d = j.daily;
+    el.innerHTML = d.time.map((t,i)=>{
+      const w = WMO[d.weather_code[i]] || ["🌡️",""];
+      const dt = new Date(t+"T00:00:00");
+      return `<div class="wx-day">
+        <div class="d">${dt.getMonth()+1}/${dt.getDate()} 週${WK[dt.getDay()]}</div>
+        <div class="ic">${w[0]}</div>
+        <div class="t">${Math.round(d.temperature_2m_max[i])}°<span class="lo"> / ${Math.round(d.temperature_2m_min[i])}°</span></div>
+        <div class="p">☔ ${d.precipitation_probability_max[i]}%</div>
+      </div>`;
+    }).join("");
+  }catch(e){
+    el.innerHTML = '<div class="wx-note">天氣載入失敗，請稍後重整。</div>';
+  }
+}
+loadWeather();
 
 document.querySelectorAll("nav button").forEach(btn=>{
   btn.addEventListener("click",()=>{
