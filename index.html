@@ -94,8 +94,10 @@
 
   /* ===== 加入主畫面教學卡 ===== */
   .install-card{
-    background:rgba(8,145,178,0.07);border:1px solid rgba(8,145,178,0.18);
-    border-radius:16px;box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden;
+    background:linear-gradient(160deg,rgba(233,246,251,.92),rgba(8,145,178,.09));
+    -webkit-backdrop-filter:blur(10px) saturate(140%);backdrop-filter:blur(10px) saturate(140%);
+    border:1px solid rgba(8,145,178,0.18);
+    border-radius:16px;box-shadow:0 4px 16px rgba(8,145,178,.08);margin-bottom:16px;overflow:hidden;
   }
   .install-trigger{
     width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;
@@ -123,12 +125,21 @@
   .install-note{margin:14px 0 0;padding:9px 12px;background:var(--accent-soft);border-radius:8px;font-size:12px;color:var(--sub);}
 
   /* ===== 天氣 ===== */
+  .wx-panel{
+    background:linear-gradient(160deg,#e9f6fb 0%,#d4edf4 100%);
+    border:1px solid rgba(8,145,178,.14);border-radius:16px;
+    padding:10px 8px;margin-bottom:4px;
+    box-shadow:0 4px 16px rgba(8,145,178,.08);
+  }
   .weather-strip{
-    display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:2px 2px 8px;
+    display:grid;grid-template-columns:repeat(5,1fr);gap:6px;
   }
   .wx-day{
-    background:var(--card);border:1px solid var(--line);
-    border-radius:12px;padding:9px 2px;text-align:center;box-shadow:var(--shadow);
+    background:linear-gradient(160deg,rgba(255,255,255,.94),rgba(255,255,255,.7));
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,.85);
+    border-radius:12px;padding:9px 2px;text-align:center;
+    box-shadow:0 2px 8px rgba(20,50,70,.06);
   }
   .wx-day .d{font-size:11px;color:var(--ink);font-weight:800;line-height:1.1;}
   .wx-day .wd{font-size:9.5px;color:var(--sub);font-weight:600;}
@@ -235,7 +246,9 @@
     </div>
 
     <div class="section-title">🌤️ 宮古島天氣 <span class="count">8/10–8/14</span></div>
-    <div id="weather" class="weather-strip"><div class="wx-note">天氣載入中…</div></div>
+    <div class="wx-panel">
+      <div id="weather" class="weather-strip"><div class="wx-note">天氣載入中…</div></div>
+    </div>
 
     <div class="section-title">🎫 我的航班</div>
     <div id="passes"></div>
