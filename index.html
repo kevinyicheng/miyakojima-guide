@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0891b2">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>宮古島 · 私房地圖</title>
 <style>
   :root{
@@ -91,15 +94,9 @@
 </header>
 
 <main>
-  <!-- 住宿 -->
-  <section class="panel active" data-panel="stay">
-    <div class="section-title">🏨 住宿 <span class="count">1</span></div>
-    <div class="grid" id="grid-stay"></div>
-  </section>
-
-  <!-- 景點 -->
-  <section class="panel" data-panel="spot">
-    <div class="section-title">🌴 景點 <span class="count">2</span></div>
+  <!-- 日常 -->
+  <section class="panel active" data-panel="spot">
+    <div class="section-title">📍 日常 <span class="count">3</span></div>
     <div class="grid" id="grid-spot"></div>
   </section>
 
@@ -119,8 +116,7 @@
 </main>
 
 <nav>
-  <button class="active" data-tab="stay"><span class="ic">🏨</span>住宿</button>
-  <button data-tab="spot"><span class="ic">🌴</span>景點</button>
+  <button class="active" data-tab="spot"><span class="ic">📍</span>日常</button>
   <button data-tab="food"><span class="ic">🍜</span>美食</button>
   <button data-tab="sweet"><span class="ic">🍰</span>甜點咖啡</button>
 </nav>
@@ -128,10 +124,8 @@
 <script>
 // query = 送進 Google Maps 導航目的地的搜尋字串（用當地原名較準）
 const DATA = {
-  stay: [
-    {emoji:"🏨", name:"Nishizato Hirara",        note:"沖縄県宮古島市平良西里 906-0012",  query:"Nishizato Hirara 906-0012 宮古島"},
-  ],
   spot: [
+    {emoji:"🏨", name:"Nishizato Hirara",        note:"住宿 · 沖縄県宮古島市平良西里 906-0012", query:"Nishizato Hirara 906-0012 宮古島"},
     {emoji:"✈️", name:"下地島機場",              note:"Shimojishima Airport",           query:"下地島空港"},
     {emoji:"🛍️", name:"西里大通商店街",          note:"Nishizatoo Street 平良市中心",    query:"西里大通り 宮古島"},
   ],
@@ -175,7 +169,7 @@ function render(cat){
       <div class="go">查看${ARROW}</div>
     </a>`).join("");
 }
-["stay","spot","food","sweet"].forEach(render);
+["spot","food","sweet"].forEach(render);
 
 document.querySelectorAll("nav button").forEach(btn=>{
   btn.addEventListener("click",()=>{
