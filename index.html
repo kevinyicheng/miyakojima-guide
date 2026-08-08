@@ -87,7 +87,7 @@
 <header>
   <div class="kicker">MIYAKOJIMA · 宮古島</div>
   <h1>私房地圖 🏝️</h1>
-  <p>點一下卡片，直接開啟 Google Maps 導航</p>
+  <p>點一下卡片，開啟該地點的 Google Maps 頁面</p>
 </header>
 
 <main>
@@ -148,7 +148,8 @@ const DATA = {
 };
 
 function mapLink(q){
-  return "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(q);
+  // 開啟該地點的 Google Maps 頁面（照片／評論／營業時間，頁面上可再按導航）
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
 }
 const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
 
@@ -161,7 +162,7 @@ function render(cat){
         <div class="name">${it.name}</div>
         <div class="note">${it.note}</div>
       </div>
-      <div class="go">導航${ARROW}</div>
+      <div class="go">查看${ARROW}</div>
     </a>`).join("");
 }
 ["spot","food","sweet"].forEach(render);
