@@ -85,6 +85,36 @@
 
   footer{text-align:center;color:var(--sub);font-size:11px;padding:14px;}
 
+  /* ===== 加入主畫面教學卡 ===== */
+  .install-card{
+    background:rgba(8,145,178,0.07);border:1px solid rgba(8,145,178,0.18);
+    border-radius:16px;box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden;
+  }
+  .install-trigger{
+    width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;
+    background:none;border:none;cursor:pointer;text-align:left;color:inherit;font-family:inherit;
+  }
+  .install-trigger-icon{
+    width:38px;height:38px;border-radius:10px;background:var(--accent-soft);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .install-trigger-icon svg{width:18px;height:18px;stroke:var(--accent);stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .install-trigger-text{flex:1;}
+  .install-trigger-label{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:2px;}
+  .install-trigger-title{font-size:14.5px;font-weight:800;color:var(--ink);}
+  .install-chevron{width:20px;height:20px;color:var(--sub);transition:transform .25s ease;flex-shrink:0;}
+  .install-card.open .install-chevron{transform:rotate(180deg);}
+  .install-body{display:none;padding:0 16px 16px;border-top:1px solid rgba(8,145,178,0.12);}
+  .install-card.open .install-body{display:block;}
+  .install-steps{padding-top:14px;display:flex;flex-direction:column;gap:12px;}
+  .install-step{display:flex;align-items:flex-start;gap:12px;}
+  .step-num{flex-shrink:0;width:23px;height:23px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .step-text{font-size:13px;color:var(--sub);line-height:1.6;padding-top:2px;margin:0;}
+  .step-text strong{color:var(--ink);}
+  .step-icon{display:inline-flex;align-items:center;vertical-align:middle;margin:0 2px;}
+  .step-icon svg{width:16px;height:16px;stroke:var(--ink);stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .install-note{margin:14px 0 0;padding:9px 12px;background:var(--accent-soft);border-radius:8px;font-size:12px;color:var(--sub);}
+
   /* ===== 天氣 ===== */
   .weather-strip{
     display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:2px 2px 8px;
@@ -169,6 +199,30 @@
 <main>
   <!-- 日常 -->
   <section class="panel active" data-panel="spot">
+
+    <!-- 加入主畫面教學卡 -->
+    <div class="install-card" id="installCard">
+      <button class="install-trigger" onclick="toggleInstall()" aria-expanded="false" aria-controls="installBody">
+        <div class="install-trigger-icon">
+          <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        </div>
+        <div class="install-trigger-text">
+          <div class="install-trigger-label">iPhone · Safari</div>
+          <div class="install-trigger-title">加入主畫面成為 App</div>
+        </div>
+        <svg class="install-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="install-body" id="installBody">
+        <div class="install-steps">
+          <div class="install-step"><span class="step-num">1</span><p class="step-text">用 <strong>Safari</strong> 開啟本頁面（Chrome 不支援此功能）</p></div>
+          <div class="install-step"><span class="step-num">2</span><p class="step-text">點底部工具列的<strong>「分享」</strong>按鈕<span class="step-icon"><svg viewBox="0 0 24 24"><path d="M8.5 6.5L12 3L15.5 6.5"/><line x1="12" y1="3" x2="12" y2="14"/><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7"/></svg></span></p></div>
+          <div class="install-step"><span class="step-num">3</span><p class="step-text">向下捲動選單，選<strong>「加入主畫面」</strong></p></div>
+          <div class="install-step"><span class="step-num">4</span><p class="step-text">確認名稱後點右上角<strong>「新增」</strong>即完成</p></div>
+        </div>
+        <p class="install-note">安裝後圖示會出現在主畫面，全螢幕開啟，不顯示網址列。</p>
+      </div>
+    </div>
+
     <div class="section-title">🌤️ 宮古島天氣 <span class="count">8/10–8/14</span></div>
     <div id="weather" class="weather-strip"><div class="wx-note">天氣載入中…</div></div>
 
@@ -250,6 +304,19 @@ function render(cat){
     </a>`).join("");
 }
 ["spot","food","sweet"].forEach(render);
+
+/* ================= 加入主畫面教學卡 ================= */
+function toggleInstall(){
+  const card = document.getElementById("installCard");
+  const btn  = card.querySelector(".install-trigger");
+  const open = card.classList.toggle("open");
+  btn.setAttribute("aria-expanded", open);
+}
+// 已加入主畫面（全螢幕開啟）就不用再顯示教學
+if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone){
+  const c = document.getElementById("installCard");
+  if (c) c.style.display = "none";
+}
 
 /* ================= 航班 / 登機證 ================= */
 // 若之後接上 AeroDataBox 代理，把網址填進 FLIGHT_API（例：Cloudflare Worker）
