@@ -87,19 +87,18 @@
 
   /* ===== 天氣 ===== */
   .weather-strip{
-    display:flex;gap:8px;overflow-x:auto;padding:2px 4px 8px;
-    -webkit-overflow-scrolling:touch;scrollbar-width:none;
+    display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:2px 2px 8px;
   }
-  .weather-strip::-webkit-scrollbar{display:none;}
   .wx-day{
-    flex:0 0 auto;width:74px;background:var(--card);border:1px solid var(--line);
-    border-radius:14px;padding:10px 6px;text-align:center;box-shadow:var(--shadow);
+    background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:9px 2px;text-align:center;box-shadow:var(--shadow);
   }
-  .wx-day .d{font-size:11px;color:var(--sub);font-weight:700;}
-  .wx-day .ic{font-size:24px;line-height:1.2;margin:2px 0;}
-  .wx-day .t{font-size:13px;font-weight:800;}
-  .wx-day .t .lo{color:var(--sub);font-weight:600;}
-  .wx-day .p{font-size:10.5px;color:#0284c7;font-weight:700;margin-top:2px;}
+  .wx-day .d{font-size:11px;color:var(--ink);font-weight:800;line-height:1.1;}
+  .wx-day .wd{font-size:9.5px;color:var(--sub);font-weight:600;}
+  .wx-day .ic{font-size:22px;line-height:1.2;margin:1px 0;}
+  .wx-day .t{font-size:12px;font-weight:800;}
+  .wx-day .t .lo{color:var(--sub);font-weight:600;font-size:11px;}
+  .wx-day .p{font-size:10px;color:#0284c7;font-weight:700;margin-top:1px;}
   .wx-note{font-size:11px;color:var(--sub);padding:0 6px 2px;}
 
   /* ===== 登機證 ===== */
@@ -156,11 +155,8 @@
     display:flex;justify-content:space-between;align-items:center;
     padding:8px 18px 14px;
   }
-  .barcode{height:34px;flex:1;margin-right:12px;
-    background:repeating-linear-gradient(90deg,#1a2733 0 2px,#fff 2px 4px,#1a2733 4px 7px,#fff 7px 9px);
-    opacity:.85;border-radius:2px;}
-  .pass-foot a{font-size:11px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;}
-  .pass-date{font-size:11px;color:var(--sub);font-weight:600;}
+  .pass-foot a{font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;}
+  .pass-date{font-size:12px;color:var(--sub);font-weight:700;}
 </style>
 </head>
 <body>
@@ -179,7 +175,7 @@
     <div class="section-title">🎫 我的航班</div>
     <div id="passes"></div>
 
-    <div class="section-title">📍 景點・住宿 <span class="count">3</span></div>
+    <div class="section-title">📍 景點・住宿 <span class="count">4</span></div>
     <div class="grid" id="grid-spot"></div>
   </section>
 
@@ -210,6 +206,7 @@ const DATA = {
   spot: [
     {emoji:"🏨", name:"住宿GranLeaf",             note:"Granleaf Miyakojima",             query:"Granleaf Miyakojima"},
     {emoji:"✈️", name:"下地島機場",              note:"Shimojishima Airport",           query:"下地島空港"},
+    {emoji:"🚗", name:"租車處 Alsta",            note:"アルスタレンタカー 宮古島店",     url:"https://maps.app.goo.gl/m36YiA8VnuRXhsiR6", query:"アルスタレンタカー 宮古島"},
     {emoji:"🛍️", name:"西里大通商店街",          note:"Nishizatoo Street 平良市中心",    query:"西里大通り 宮古島"},
   ],
   food: [
@@ -243,7 +240,7 @@ const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 function render(cat){
   const grid = document.getElementById("grid-"+cat);
   grid.innerHTML = DATA[cat].map(it=>`
-    <a class="card" href="${mapLink(it.query)}" target="_blank" rel="noopener">
+    <a class="card" href="${it.url || mapLink(it.query)}" target="_blank" rel="noopener">
       <div class="emoji">${it.emoji}</div>
       <div class="info">
         <div class="name">${it.name}</div>
@@ -322,11 +319,8 @@ function renderPasses(){
         ${fld("行李轉檯 Belt", f.belt)}
       </div>
       <div class="pass-foot">
-        <div class="barcode"></div>
-        <div style="text-align:right">
-          <div class="pass-date">${fmtDate(f.date)}</div>
-          <a href="https://www.google.com/search?q=${f.no}+flight+status" target="_blank" rel="noopener">航班動態 ›</a>
-        </div>
+        <div class="pass-date">${fmtDate(f.date)}</div>
+        <a href="https://www.google.com/search?q=${f.no}+flight+status" target="_blank" rel="noopener">航班動態 ›</a>
       </div>
     </div>`;
   }).join("");
@@ -373,10 +367,11 @@ async function loadWeather(){
       const w = WMO[d.weather_code[i]] || ["🌡️",""];
       const dt = new Date(t+"T00:00:00");
       return `<div class="wx-day">
-        <div class="d">${dt.getMonth()+1}/${dt.getDate()} 週${WK[dt.getDay()]}</div>
+        <div class="d">${dt.getMonth()+1}/${dt.getDate()}</div>
+        <div class="wd">週${WK[dt.getDay()]}</div>
         <div class="ic">${w[0]}</div>
-        <div class="t">${Math.round(d.temperature_2m_max[i])}°<span class="lo"> / ${Math.round(d.temperature_2m_min[i])}°</span></div>
-        <div class="p">☔ ${d.precipitation_probability_max[i]}%</div>
+        <div class="t">${Math.round(d.temperature_2m_max[i])}°<span class="lo">/${Math.round(d.temperature_2m_min[i])}°</span></div>
+        <div class="p">☔${d.precipitation_probability_max[i]}%</div>
       </div>`;
     }).join("");
   }catch(e){
