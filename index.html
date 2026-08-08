@@ -464,6 +464,13 @@ async function loadWeather(){
 }
 loadWeather();
 
+/* ================= Service Worker（永遠抓最新，關掉舊快取問題） ================= */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).catch(() => {});
+  });
+}
+
 document.querySelectorAll("nav button").forEach(btn=>{
   btn.addEventListener("click",()=>{
     const tab = btn.dataset.tab;
