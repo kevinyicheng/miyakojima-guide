@@ -197,8 +197,8 @@
 </header>
 
 <main>
-  <!-- 日常 -->
-  <section class="panel active" data-panel="spot">
+  <!-- 重要 -->
+  <section class="panel active" data-panel="important">
 
     <!-- 加入主畫面教學卡 -->
     <div class="install-card" id="installCard">
@@ -230,7 +230,13 @@
     <div class="section-title">🎫 我的航班</div>
     <div id="passes"></div>
 
-    <div class="section-title">📍 景點・住宿 <span class="count">4</span></div>
+    <div class="section-title">🏨 住宿・交通 <span class="count">3</span></div>
+    <div class="grid" id="grid-important"></div>
+  </section>
+
+  <!-- 景點 -->
+  <section class="panel" data-panel="spot">
+    <div class="section-title">🌴 景點 <span class="count">1</span></div>
     <div class="grid" id="grid-spot"></div>
   </section>
 
@@ -250,7 +256,8 @@
 </main>
 
 <nav>
-  <button class="active" data-tab="spot"><span class="ic">📍</span>日常</button>
+  <button class="active" data-tab="important"><span class="ic">⭐</span>重要</button>
+  <button data-tab="spot"><span class="ic">🌴</span>景點</button>
   <button data-tab="food"><span class="ic">🍜</span>美食</button>
   <button data-tab="sweet"><span class="ic">🍰</span>甜點咖啡</button>
 </nav>
@@ -258,10 +265,12 @@
 <script>
 // query = 送進 Google Maps 導航目的地的搜尋字串（用當地原名較準）
 const DATA = {
-  spot: [
+  important: [
     {emoji:"🏨", name:"住宿GranLeaf",             note:"Granleaf Miyakojima",             query:"Granleaf Miyakojima"},
     {emoji:"✈️", name:"下地島機場",              note:"Shimojishima Airport",           query:"下地島空港"},
     {emoji:"🚗", name:"租車處 Alsta",            note:"アルスタレンタカー 宮古島店",     url:"https://maps.app.goo.gl/m36YiA8VnuRXhsiR6", query:"アルスタレンタカー 宮古島"},
+  ],
+  spot: [
     {emoji:"🛍️", name:"西里大通商店街",          note:"Nishizatoo Street 平良市中心",    query:"西里大通り 宮古島"},
   ],
   food: [
@@ -304,7 +313,7 @@ function render(cat){
       <div class="go">查看${ARROW}</div>
     </a>`).join("");
 }
-["spot","food","sweet"].forEach(render);
+["important","spot","food","sweet"].forEach(render);
 
 /* ================= 加入主畫面教學卡 ================= */
 function toggleInstall(){
