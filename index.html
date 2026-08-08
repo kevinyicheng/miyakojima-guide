@@ -57,6 +57,7 @@
   .info{flex:1;min-width:0;}
   .name{font-size:15px;font-weight:700;line-height:1.3;}
   .note{font-size:12.5px;color:var(--sub);margin-top:2px;}
+  .feature{font-size:11px;color:#9fb0bb;line-height:1.45;margin-top:2px;}
   .go{
     flex:0 0 auto;display:flex;align-items:center;gap:3px;
     font-size:12px;font-weight:700;color:var(--accent);
@@ -271,32 +272,32 @@ const DATA = {
     {emoji:"🚗", name:"租車處 Alsta",            note:"アルスタレンタカー 宮古島店",     url:"https://maps.app.goo.gl/m36YiA8VnuRXhsiR6", query:"アルスタレンタカー 宮古島"},
   ],
   spot: [
-    {emoji:"⛩️", name:"宮古神社",                note:"Miyako Shrine",                   url:"https://maps.app.goo.gl/hZNt6rpgyKXxu5xKA", query:"宮古神社"},
-    {emoji:"🛍️", name:"西里大通商店街",          note:"Nishizatoo Street 平良市中心",    query:"西里大通り 宮古島"},
+    {emoji:"⛩️", name:"宮古神社",                note:"Miyako Shrine",                   url:"https://maps.app.goo.gl/hZNt6rpgyKXxu5xKA", query:"宮古神社", feature:"日本最南端神社・沖繩紅瓦本殿，求財運與生意興隆"},
+    {emoji:"🛍️", name:"西里大通商店街",          note:"Nishizatoo Street 平良市中心",    query:"西里大通り 宮古島", feature:"島上最老商店街，白天逛街、入夜變居酒屋街"},
   ],
   food: [
-    {emoji:"🦐", name:"HARRY'S Shrimp Truck",   note:"蝦蝦飯",                          query:"HARRY'S Shrimp Truck 宮古島"},
-    {emoji:"🍜", name:"蔵之介",                  note:"沖繩系拉麵",                      query:"らーめん 蔵之介 宮古島"},
-    {emoji:"🍠", name:"海美来",                  note:"紅薯餅、蕎麥麵 · 在海邊",         query:"海美来 宮古島"},
-    {emoji:"🍙", name:"Kujira Diner",           note:"飯糰好吃",                        query:"Kujira Diner 宮古島"},
-    {emoji:"🍔", name:"Doug's Burger",          note:"鮪魚漢堡",                        query:"Dougs Burger 宮古島"},
-    {emoji:"🐖", name:"阿古豬 龍宮",            note:"Miyakojima tonkatsu ryugu",       query:"とんかつ 龍宮 宮古島"},
-    {emoji:"🥩", name:"宮古牛燒肉 玉城",         note:"燒肉評價高",                      query:"焼肉 玉城 宮古島"},
-    {emoji:"🍲", name:"古謝そば",                note:"Koja Soba 麵館",                  query:"古謝そば 宮古島"},
-    {emoji:"🍝", name:"Fish taverna sambo",     note:"義大利麵・海鮮",                  url:"https://maps.app.goo.gl/Vd6exjRWeq7oYpsk6", query:"Fish taverna sambo 宮古島"},
-    {emoji:"🍔", name:"Bocca Burger",           note:"宮古牛漢堡・門口小熊拍照",         url:"https://maps.app.goo.gl/YEn1szruZeqipvFj8", query:"Bocca burger 宮古島"},
+    {emoji:"🦐", name:"HARRY'S Shrimp Truck",   note:"蝦蝦飯",                          query:"HARRY'S Shrimp Truck 宮古島", feature:"夏威夷風蒜香奶油蝦，海邊綠色網美餐車"},
+    {emoji:"🍜", name:"蔵之介",                  note:"沖繩系拉麵",                      query:"らーめん 蔵之介 宮古島", feature:"五穀味噌＋在地宮古味噌的濃郁味噌拉麵"},
+    {emoji:"🍠", name:"海美来",                  note:"紅薯餅、蕎麥麵 · 在海邊",         query:"海美来 宮古島", feature:"池間大橋旁海景，招牌炸紅芋餅、宮古蕎麥麵"},
+    {emoji:"🍙", name:"Kujira Diner",           note:"飯糰好吃",                        query:"Kujira Diner 宮古島", feature:"現做豬肉蛋飯糰，在地人氣早餐（賣完為止）"},
+    {emoji:"🍔", name:"Doug's Burger",          note:"鮪魚漢堡",                        query:"Dougs Burger 宮古島", feature:"近海現釣鮪魚排＋宮古和牛，招牌鮪魚排堡"},
+    {emoji:"🐖", name:"阿古豬 龍宮",            note:"Miyakojima tonkatsu ryugu",       query:"とんかつ 龍宮 宮古島", feature:"肉商直營，阿古豬・松阪豬炸豬排專門店"},
+    {emoji:"🥩", name:"宮古牛燒肉 玉城",         note:"燒肉評價高",                      query:"焼肉 玉城 宮古島", feature:"整頭採購宮古牛，稀少部位入口即化"},
+    {emoji:"🍲", name:"古謝そば",                note:"Koja Soba 麵館",                  query:"古謝そば 宮古島", feature:"昭和7年創業，自家製麵老店，招牌軟骨麵"},
+    {emoji:"🍝", name:"Fish taverna sambo",     note:"義大利麵・海鮮",                  url:"https://maps.app.goo.gl/Vd6exjRWeq7oYpsk6", query:"Fish taverna sambo 宮古島", feature:"老闆有漁業權自捕鮮魚，宮古島食材義式料理"},
+    {emoji:"🍔", name:"Bocca Burger",           note:"宮古牛漢堡・門口小熊拍照",         url:"https://maps.app.goo.gl/YEn1szruZeqipvFj8", query:"Bocca burger 宮古島", feature:"宮古牛100%肉排，布魯克林風藝廊空間"},
   ],
   sweet: [
-    {emoji:"☕", name:"Doug's Coffee",          note:"杏仁拿鐵",                        query:"Dougs Coffee 宮古島"},
-    {emoji:"🧁", name:"Ningin Coffee",          note:"巴斯克蛋糕",                      query:"Ningin Coffee 宮古島"},
-    {emoji:"🍇", name:"楽園の果実",              note:"Farmer's Restaurant 果物咖啡",    query:"楽園の果実 宮古島"},
-    {emoji:"🍦", name:"Ricco Gelato",           note:"冰淇淋好吃",                      query:"Ricco gelato 宮古島"},
-    {emoji:"🧂", name:"雪塩ミュージアム",        note:"雪鹽博物館",                      query:"雪塩ミュージアム 宮古島"},
-    {emoji:"🍌", name:"モンテドール",            note:"Monte Doll 香蕉蛋糕",             query:"モンテドール 宮古島"},
-    {emoji:"🍧", name:"Kairi 来間島",           note:"浮誇的冰",                        query:"AOSORA PARLOR 来間島"},
-    {emoji:"🍮", name:"ベツバーラ",              note:"宮古スイーツ · 白天晚上都有",     query:"ベツバーラ 宮古島"},
-    {emoji:"🥐", name:"Moja's Bakery",          note:"好吃麵包",                        url:"https://maps.app.goo.gl/Y3gdABfRBXdiTeGU6", query:"Moja's Bakery 宮古島"},
-    {emoji:"🍮", name:"豆腐布丁 まご松商店",     note:"とうふプリン",                    url:"https://maps.app.goo.gl/Nv73LXcuebAS5eqQ6", query:"まご松商店 宮古島"},
+    {emoji:"☕", name:"Doug's Coffee",          note:"杏仁拿鐵",                        query:"Dougs Coffee 宮古島", feature:"一杯一沖手沖，5種豆自選，自稱島上最好喝拿鐵"},
+    {emoji:"🧁", name:"Ningin Coffee",          note:"巴斯克蛋糕",                      query:"Ningin Coffee 宮古島", feature:"自家烘焙咖啡，紅芋巴斯克起司蛋糕配黑糖醬"},
+    {emoji:"🍇", name:"楽園の果実",              note:"Farmer's Restaurant 果物咖啡",    query:"楽園の果実 宮古島", feature:"來間島自種有機芒果，完熟芒果聖代（夏季限定）"},
+    {emoji:"🍦", name:"Ricco Gelato",           note:"冰淇淋好吃",                      query:"Ricco gelato 宮古島", feature:"約30種宮古島食材，無添加現做義式冰淇淋"},
+    {emoji:"🧂", name:"雪塩ミュージアム",        note:"雪鹽博物館",                      query:"雪塩ミュージアム 宮古島", feature:"金氏認證礦物質最多的鹽，必吃雪鹽霜淇淋"},
+    {emoji:"🍌", name:"モンテドール",            note:"Monte Doll 香蕉蛋糕",             query:"モンテドール 宮古島", feature:"40年招牌香蕉蛋糕，JAL頭等艙選用伴手禮"},
+    {emoji:"🍧", name:"Kairi 来間島",           note:"浮誇的冰",                        query:"AOSORA PARLOR 来間島", feature:"來間島海景浮誇水果刨冰，宮古島芒果"},
+    {emoji:"🍮", name:"ベツバーラ",              note:"宮古スイーツ · 白天晚上都有",     query:"ベツバーラ 宮古島", feature:"31年菓子工房出品，宮古島水果聖代＆夜間聖代"},
+    {emoji:"🥐", name:"Moja's Bakery",          note:"好吃麵包",                        url:"https://maps.app.goo.gl/Y3gdABfRBXdiTeGU6", query:"Moja's Bakery 宮古島", feature:"手揉現烤圓滾滾麵包，開店前常排隊售完"},
+    {emoji:"🍮", name:"豆腐布丁 まご松商店",     note:"とうふプリン",                    url:"https://maps.app.goo.gl/Nv73LXcuebAS5eqQ6", query:"まご松商店 宮古島", feature:"公設市場島豆腐老店，豆腐霜淇淋與布丁"},
   ],
 };
 
@@ -314,6 +315,7 @@ function render(cat){
       <div class="info">
         <div class="name">${it.name}</div>
         <div class="note">${it.note}</div>
+        ${it.feature ? `<div class="feature">${it.feature}</div>` : ""}
       </div>
       <div class="go">查看${ARROW}</div>
     </a>`).join("");
