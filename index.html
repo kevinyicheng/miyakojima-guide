@@ -138,62 +138,65 @@
   .wx-day .p{font-size:10px;color:#0284c7;font-weight:700;margin-top:1px;}
   .wx-note{font-size:11px;color:var(--sub);padding:0 6px 2px;}
 
-  /* ===== 登機證 ===== */
+  /* ===== 登機證（STARLUX 星宇風・宇宙藍×香檳金・毛玻璃） ===== */
   .pass{
-    background:var(--card);border-radius:18px;overflow:hidden;
-    box-shadow:0 4px 16px rgba(20,50,70,.10);margin-bottom:14px;
-    border:1px solid var(--line);
+    position:relative;border-radius:20px;overflow:hidden;margin-bottom:14px;
+    color:#f4f1ea;
+    background:
+      radial-gradient(130% 90% at 82% -10%, rgba(224,196,132,.20), transparent 55%),
+      linear-gradient(160deg,#1b1d3e 0%,#241f47 46%,#122a4b 100%);
+    box-shadow:0 12px 34px rgba(18,24,58,.30);
+    border:1px solid rgba(224,196,132,.24);
   }
   .pass-head{
-    background:linear-gradient(120deg,#1a2b4a,#24406e);color:#fff;
-    padding:11px 16px;display:flex;justify-content:space-between;align-items:center;
+    padding:12px 18px;display:flex;justify-content:space-between;align-items:center;
+    border-bottom:1px solid rgba(224,196,132,.22);background:rgba(255,255,255,.04);
   }
-  .pass-head .al{font-size:12px;font-weight:700;letter-spacing:.5px;}
-  .pass-head .fn{font-size:15px;font-weight:800;letter-spacing:1px;}
+  .pass-head .al{font-size:11.5px;font-weight:700;letter-spacing:.6px;color:#e6cf9c;}
+  .pass-head .fn{font-size:16px;font-weight:800;letter-spacing:1.5px;color:#e6cf9c;}
   .pass-route{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:16px 18px 12px;
+    display:flex;align-items:center;justify-content:space-between;padding:14px 20px 4px;
   }
   .pass-route .ap{text-align:center;min-width:0;}
-  .pass-route .code{font-size:30px;font-weight:800;line-height:1;color:var(--ink);}
-  .pass-route .city{font-size:11.5px;color:var(--sub);margin-top:3px;white-space:nowrap;}
-  .pass-route .mid{flex:1;text-align:center;color:var(--accent);}
-  .pass-route .mid .plane{font-size:20px;}
-  .pass-route .mid .dur{font-size:10px;color:var(--sub);margin-top:1px;}
-  .pass-times{
-    display:flex;justify-content:space-between;padding:0 18px 12px;
-    font-size:12px;color:var(--sub);
-  }
-  .pass-times b{display:block;color:var(--ink);font-size:15px;font-weight:800;}
-  .pass-times .rev{color:#dc2626;}
+  .pass-route .code{font-size:19px;font-weight:800;line-height:1;color:#eef1f7;letter-spacing:1px;}
+  .pass-route .city{font-size:10.5px;color:#9fa7c4;margin-top:3px;white-space:nowrap;}
+  .pass-route .mid{flex:1;text-align:center;color:#d8b878;}
+  .pass-route .mid .plane{font-size:16px;}
+  .pass-route .mid .dur{font-size:9.5px;color:#8f97b8;margin-top:1px;}
+  /* 時間 = 主角，大字一眼可辨 */
+  .pass-times{display:flex;justify-content:space-between;align-items:flex-start;padding:2px 20px 14px;}
+  .pass-times .tm{display:flex;flex-direction:column;}
+  .pass-times .tm.right{align-items:flex-end;}
+  .pass-times .lbl{font-size:10px;letter-spacing:.5px;color:#9fa7c4;font-weight:600;margin-bottom:2px;}
+  .pass-times .big{font-size:40px;font-weight:800;line-height:.95;color:#fff;font-variant-numeric:tabular-nums;}
+  .pass-times .rev{font-size:12px;font-weight:700;color:#ffcf8b;margin-top:4px;}
   .pass-alert{
-    margin:0 18px 12px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;
-    border-radius:10px;padding:7px 11px;font-size:11.5px;font-weight:600;
+    margin:0 16px 14px;border-radius:12px;padding:9px 13px;
+    background:rgba(224,196,132,.12);border:1px solid rgba(224,196,132,.30);
+    color:#ecd9ac;font-size:11.5px;font-weight:600;
     display:flex;justify-content:space-between;gap:8px;
   }
-  .perf{
-    position:relative;border-top:2px dashed var(--line);margin:0 12px;height:0;
-  }
+  .perf{position:relative;border-top:1.5px dashed rgba(224,196,132,.38);margin:0 14px;height:0;}
   .perf::before,.perf::after{
-    content:"";position:absolute;top:-11px;width:20px;height:20px;
-    border-radius:50%;background:var(--bg);border:1px solid var(--line);
+    content:"";position:absolute;top:-11px;width:20px;height:20px;border-radius:50%;
+    background:var(--bg);
   }
-  .perf::before{left:-22px;}
-  .perf::after{right:-22px;}
-  .pass-fields{
-    display:grid;grid-template-columns:repeat(2,1fr);gap:10px 12px;
-    padding:14px 18px 8px;
+  .perf::before{left:-24px;}
+  .perf::after{right:-24px;}
+  /* 下聯 = 毛玻璃 */
+  .pass-stub{
+    padding:14px 20px 8px;background:rgba(255,255,255,.08);
+    -webkit-backdrop-filter:blur(12px) saturate(140%);backdrop-filter:blur(12px) saturate(140%);
+    border-top:1px solid rgba(255,255,255,.10);
   }
+  .pass-fields{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
   .pf{min-width:0;}
-  .pf .k{font-size:10px;color:var(--sub);font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
-  .pf .v{font-size:17px;font-weight:800;margin-top:1px;}
-  .pf .v.wait{font-size:12px;font-weight:600;color:var(--sub);}
-  .pass-foot{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:8px 18px 14px;
-  }
-  .pass-foot a{font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;}
-  .pass-date{font-size:12px;color:var(--sub);font-weight:700;}
+  .pf .k{font-size:9.5px;color:#c3aa72;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+  .pf .v{font-size:17px;font-weight:800;margin-top:2px;color:#fff;}
+  .pf .v.wait{font-size:12px;font-weight:600;color:#9fa7c4;}
+  .pass-foot{display:flex;justify-content:space-between;align-items:center;padding:10px 20px 14px;}
+  .pass-foot a{font-size:12px;font-weight:700;color:#e6cf9c;text-decoration:none;white-space:nowrap;}
+  .pass-date{font-size:12px;color:#9fa7c4;font-weight:700;}
 </style>
 </head>
 <body>
@@ -394,23 +397,25 @@ function renderPasses(){
         <div class="ap"><div class="code">${f.to.code}</div><div class="city">${f.to.city}</div></div>
       </div>
       <div class="pass-times">
-        <div>表定起飛<b>${f.std} ${rev}</b></div>
-        <div style="text-align:right">表定抵達<b>${f.sta}</b></div>
+        <div class="tm"><span class="lbl">表定起飛</span><span class="big">${f.std}</span>${rev}</div>
+        <div class="tm right"><span class="lbl">表定抵達</span><span class="big">${f.sta}</span></div>
       </div>
       <div class="pass-alert">
         <span>🛂 報到截止 ${chkClose}</span>
         <span>🚪 預估登機 ${boarding}</span>
       </div>
       <div class="perf"></div>
-      <div class="pass-fields">
-        ${fld("航廈 Terminal", f.terminal)}
-        ${fld("登機門 Gate", f.gate)}
-        ${fld("報到櫃檯 Check-in", f.checkIn)}
-        ${fld("行李轉檯 Belt", f.belt)}
-      </div>
-      <div class="pass-foot">
-        <div class="pass-date">${fmtDate(f.date)}</div>
-        <a href="https://www.google.com/search?q=${f.no}+flight+status" target="_blank" rel="noopener">航班動態 ›</a>
+      <div class="pass-stub">
+        <div class="pass-fields">
+          ${fld("航廈 Terminal", f.terminal)}
+          ${fld("登機門 Gate", f.gate)}
+          ${fld("報到櫃檯 Check-in", f.checkIn)}
+          ${fld("行李轉檯 Belt", f.belt)}
+        </div>
+        <div class="pass-foot">
+          <div class="pass-date">${fmtDate(f.date)}</div>
+          <a href="https://www.google.com/search?q=${f.no}+flight+status" target="_blank" rel="noopener">航班動態 ›</a>
+        </div>
       </div>
     </div>`;
   }).join("");
