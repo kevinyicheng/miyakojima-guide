@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0891b2">
+<title>宮古島 · 私房地圖</title>
+<style>
+  :root{
+    --bg:#f4f7f9; --card:#ffffff; --ink:#1a2733; --sub:#6b7d8a;
+    --line:#e7edf1; --accent:#0891b2; --accent-soft:#e0f5fa;
+    --shadow:0 2px 10px rgba(20,50,70,.06);
+    --safe-b:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif;
+    background:var(--bg); color:var(--ink);
+    padding-bottom:calc(76px + var(--safe-b));
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    background:linear-gradient(135deg,#0891b2,#0ea5b7);
+    color:#fff; padding:22px 20px 20px; position:sticky; top:0; z-index:5;
+  }
+  header .kicker{font-size:12px;letter-spacing:2px;opacity:.85;font-weight:600;}
+  header h1{margin:4px 0 2px;font-size:22px;font-weight:800;}
+  header p{margin:0;font-size:13px;opacity:.9;}
+
+  main{padding:16px 14px 8px; max-width:640px; margin:0 auto;}
+  .section-title{
+    display:flex;align-items:center;gap:8px;
+    font-size:15px;font-weight:800;margin:6px 4px 12px;color:var(--ink);
+  }
+  .section-title .count{
+    font-size:12px;font-weight:600;color:var(--accent);
+    background:var(--accent-soft);border-radius:20px;padding:2px 9px;
+  }
+  .grid{display:grid;gap:10px;}
+
+  a.card{
+    display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:14px 14px;box-shadow:var(--shadow);
+    transition:transform .12s ease,box-shadow .12s ease;
+  }
+  a.card:active{transform:scale(.98);box-shadow:0 1px 4px rgba(20,50,70,.08);}
+  .emoji{
+    flex:0 0 44px;height:44px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;font-size:22px;
+    background:var(--accent-soft);
+  }
+  .info{flex:1;min-width:0;}
+  .name{font-size:15px;font-weight:700;line-height:1.3;}
+  .note{font-size:12.5px;color:var(--sub);margin-top:2px;}
+  .go{
+    flex:0 0 auto;display:flex;align-items:center;gap:3px;
+    font-size:12px;font-weight:700;color:var(--accent);
+  }
+  .go svg{width:16px;height:16px;}
+
+  .panel{display:none;}
+  .panel.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  nav{
+    position:fixed;left:0;right:0;bottom:0;z-index:10;
+    background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(12px);
+    border-top:1px solid var(--line);
+    display:flex;padding-bottom:var(--safe-b);
+  }
+  nav button{
+    flex:1;border:0;background:none;padding:10px 4px;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    color:var(--sub);font-size:11px;font-weight:600;cursor:pointer;
+    font-family:inherit;transition:color .15s;
+  }
+  nav button .ic{font-size:21px;line-height:1;}
+  nav button.active{color:var(--accent);}
+  nav button.active .ic{transform:translateY(-1px);}
+
+  footer{text-align:center;color:var(--sub);font-size:11px;padding:14px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">MIYAKOJIMA · 宮古島</div>
+  <h1>私房地圖 🏝️</h1>
+  <p>點一下卡片，直接開啟 Google Maps 導航</p>
+</header>
+
+<main>
+  <!-- 景點 -->
+  <section class="panel active" data-panel="spot">
+    <div class="section-title">🌴 景點 <span class="count">2</span></div>
+    <div class="grid" id="grid-spot"></div>
+  </section>
+
+  <!-- 美食 -->
+  <section class="panel" data-panel="food">
+    <div class="section-title">🍜 美食 <span class="count">8</span></div>
+    <div class="grid" id="grid-food"></div>
+  </section>
+
+  <!-- 甜點咖啡 -->
+  <section class="panel" data-panel="sweet">
+    <div class="section-title">🍰 甜點咖啡 <span class="count">8</span></div>
+    <div class="grid" id="grid-sweet"></div>
+  </section>
+
+  <footer>資料整理自 Kevin 的宮古島我的地圖 · 由 Keri 製作</footer>
+</main>
+
+<nav>
+  <button class="active" data-tab="spot"><span class="ic">🌴</span>景點</button>
+  <button data-tab="food"><span class="ic">🍜</span>美食</button>
+  <button data-tab="sweet"><span class="ic">🍰</span>甜點咖啡</button>
+</nav>
+
+<script>
+// query = 送進 Google Maps 導航目的地的搜尋字串（用當地原名較準）
+const DATA = {
+  spot: [
+    {emoji:"✈️", name:"下地島機場",              note:"Shimojishima Airport",           query:"下地島空港"},
+    {emoji:"🛍️", name:"西里大通商店街",          note:"Nishizatoo Street 平良市中心",    query:"西里大通り 宮古島"},
+  ],
+  food: [
+    {emoji:"🦐", name:"HARRY'S Shrimp Truck",   note:"蝦蝦飯",                          query:"HARRY'S Shrimp Truck 宮古島"},
+    {emoji:"🍜", name:"蔵之介",                  note:"沖繩系拉麵",                      query:"らーめん 蔵之介 宮古島"},
+    {emoji:"🍠", name:"海美来",                  note:"紅薯餅、蕎麥麵 · 在海邊",         query:"海美来 宮古島"},
+    {emoji:"🍙", name:"Kujira Diner",           note:"飯糰好吃",                        query:"Kujira Diner 宮古島"},
+    {emoji:"🍔", name:"Doug's Burger",          note:"鮪魚漢堡",                        query:"Dougs Burger 宮古島"},
+    {emoji:"🐖", name:"阿古豬 龍宮",            note:"Miyakojima tonkatsu ryugu",       query:"とんかつ 龍宮 宮古島"},
+    {emoji:"🥩", name:"宮古牛燒肉 玉城",         note:"燒肉評價高",                      query:"焼肉 玉城 宮古島"},
+    {emoji:"🍲", name:"古謝そば",                note:"Koja Soba 麵館",                  query:"古謝そば 宮古島"},
+  ],
+  sweet: [
+    {emoji:"☕", name:"Doug's Coffee",          note:"杏仁拿鐵",                        query:"Dougs Coffee 宮古島"},
+    {emoji:"🧁", name:"Ningin Coffee",          note:"巴斯克蛋糕",                      query:"Ningin Coffee 宮古島"},
+    {emoji:"🍇", name:"楽園の果実",              note:"Farmer's Restaurant 果物咖啡",    query:"楽園の果実 宮古島"},
+    {emoji:"🍦", name:"Ricco Gelato",           note:"冰淇淋好吃",                      query:"Ricco gelato 宮古島"},
+    {emoji:"🧂", name:"雪塩ミュージアム",        note:"雪鹽博物館",                      query:"雪塩ミュージアム 宮古島"},
+    {emoji:"🍌", name:"モンテドール",            note:"Monte Doll 香蕉蛋糕",             query:"モンテドール 宮古島"},
+    {emoji:"🍧", name:"Kairi 来間島",           note:"浮誇的冰",                        query:"AOSORA PARLOR 来間島"},
+    {emoji:"🍮", name:"ベツバーラ",              note:"宮古スイーツ · 白天晚上都有",     query:"ベツバーラ 宮古島"},
+  ],
+};
+
+function mapLink(q){
+  return "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(q);
+}
+const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+
+function render(cat){
+  const grid = document.getElementById("grid-"+cat);
+  grid.innerHTML = DATA[cat].map(it=>`
+    <a class="card" href="${mapLink(it.query)}" target="_blank" rel="noopener">
+      <div class="emoji">${it.emoji}</div>
+      <div class="info">
+        <div class="name">${it.name}</div>
+        <div class="note">${it.note}</div>
+      </div>
+      <div class="go">導航${ARROW}</div>
+    </a>`).join("");
+}
+["spot","food","sweet"].forEach(render);
+
+document.querySelectorAll("nav button").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const tab = btn.dataset.tab;
+    document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b===btn));
+    document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.dataset.panel===tab));
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+});
+</script>
+</body>
+</html>
