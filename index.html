@@ -325,6 +325,37 @@
   <section class="panel" data-panel="spot">
     <div class="section-title">🌴 景點 <span class="count">3</span></div>
     <div class="grid" id="grid-spot"></div>
+
+    <!-- 看星星（下拉選單） -->
+    <div class="install-card" id="starCard" style="margin-top:14px;">
+      <button class="install-trigger" onclick="toggleStar()" aria-expanded="false" aria-controls="starBody">
+        <div class="install-trigger-icon"><span style="font-size:20px;">✨</span></div>
+        <div class="install-trigger-text">
+          <div class="install-trigger-label">夜間 · 觀星</div>
+          <div class="install-trigger-title">看星星推薦地點</div>
+        </div>
+        <svg class="install-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="install-body" id="starBody">
+        <div class="grid" style="padding-top:14px;">
+          <a class="card" href="https://maps.app.goo.gl/xGEQuzw6u2G6VHya8" target="_blank" rel="noopener">
+            <div class="emoji">🏖️</div>
+            <div class="info"><div class="name">與那覇前浜</div><div class="note">Yonaha Maehama · 前浜海灘</div><div class="feature">東洋第一白沙灘，無光害觀星熱點</div></div>
+            <div class="go">地圖<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>
+          </a>
+          <a class="card" href="https://maps.app.goo.gl/9CF4JazgsABwtpbaA" target="_blank" rel="noopener">
+            <div class="emoji">🗼</div>
+            <div class="info"><div class="name">東平安名岬</div><div class="note">Higashi-Hennazaki · 海岬燈塔</div><div class="feature">宮古島最東端岬角，360° 星空與日出</div></div>
+            <div class="go">地圖<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>
+          </a>
+          <a class="card" href="https://maps.app.goo.gl/iexkG27M9bFihkd67" target="_blank" rel="noopener">
+            <div class="emoji">🌌</div>
+            <div class="info"><div class="name">牧山展望台</div><div class="note">Makiyama · 展望台</div><div class="feature">來間大橋旁至高點，俯瞰海景與夜空</div></div>
+            <div class="go">地圖<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>
+          </a>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- 美食 -->
@@ -413,6 +444,12 @@ function render(cat){
 /* ================= 加入主畫面教學卡 ================= */
 function toggleInstall(){
   const card = document.getElementById("installCard");
+  const btn  = card.querySelector(".install-trigger");
+  const open = card.classList.toggle("open");
+  btn.setAttribute("aria-expanded", open);
+}
+function toggleStar(){
+  const card = document.getElementById("starCard");
   const btn  = card.querySelector(".install-trigger");
   const open = card.classList.toggle("open");
   btn.setAttribute("aria-expanded", open);
