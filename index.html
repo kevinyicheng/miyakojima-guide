@@ -149,6 +149,38 @@
   .wx-day .p{font-size:10px;color:#0284c7;font-weight:700;margin-top:1px;}
   .wx-note{font-size:11px;color:var(--sub);padding:0 6px 2px;}
 
+  /* ===== 匯率換算 ===== */
+  .fx-card{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:18px 16px;box-shadow:var(--shadow);margin-bottom:12px;
+  }
+  .fx-row{
+    display:flex;align-items:center;gap:12px;
+    background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px 14px;
+  }
+  .fx-row:focus-within{border-color:var(--accent);background:var(--accent-soft);}
+  .fx-row + .fx-row{margin-top:10px;}
+  .fx-flag{font-size:26px;flex:0 0 auto;line-height:1;}
+  .fx-meta{flex:0 0 auto;display:flex;flex-direction:column;line-height:1.15;min-width:44px;}
+  .fx-cur{font-size:15px;font-weight:800;color:var(--ink);}
+  .fx-cur-sub{font-size:11px;color:var(--sub);}
+  .fx-input{
+    flex:1;min-width:0;width:100%;border:0;background:none;text-align:right;
+    font-size:26px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;
+    font-family:inherit;outline:none;padding:0;
+  }
+  .fx-input::placeholder{color:#c3ced5;}
+  .fx-quick{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;}
+  .fx-quick button{
+    border:1px solid var(--line);background:var(--card);border-radius:20px;
+    padding:6px 12px;font-size:12px;font-weight:700;color:var(--accent);
+    font-family:inherit;cursor:pointer;
+  }
+  .fx-quick button:active{background:var(--accent-soft);}
+  .fx-rate{text-align:center;font-size:12.5px;color:var(--sub);margin-top:16px;line-height:1.6;}
+  .fx-rate b{color:var(--accent);font-weight:800;}
+  .fx-updated{text-align:center;font-size:11px;color:#9fb0bb;margin-top:4px;}
+
   /* ===== 登機證（STARLUX・奶油白×香檳金・半透明頁首） ===== */
   .pass{
     position:relative;border-radius:20px;overflow:hidden;margin-bottom:14px;
@@ -221,8 +253,28 @@
 </header>
 
 <main>
+  <!-- 匯率換算 -->
+  <section class="panel active" data-panel="fx">
+    <div class="section-title">💱 日幣 ⇄ 台幣 匯率換算</div>
+    <div class="fx-card">
+      <div class="fx-row">
+        <span class="fx-flag">🇯🇵</span>
+        <span class="fx-meta"><span class="fx-cur">JPY</span><span class="fx-cur-sub">日圓</span></span>
+        <input id="fxJPY" class="fx-input" type="text" inputmode="decimal" placeholder="0" autocomplete="off">
+      </div>
+      <div class="fx-row">
+        <span class="fx-flag">🇹🇼</span>
+        <span class="fx-meta"><span class="fx-cur">TWD</span><span class="fx-cur-sub">台幣</span></span>
+        <input id="fxTWD" class="fx-input" type="text" inputmode="decimal" placeholder="0" autocomplete="off">
+      </div>
+      <div class="fx-quick" id="fxQuick"></div>
+      <div class="fx-rate" id="fxRate">匯率載入中…</div>
+      <div class="fx-updated" id="fxUpdated"></div>
+    </div>
+  </section>
+
   <!-- 重要 -->
-  <section class="panel active" data-panel="important">
+  <section class="panel" data-panel="important">
 
     <!-- 加入主畫面教學卡 -->
     <div class="install-card" id="installCard">
@@ -282,7 +334,8 @@
 </main>
 
 <nav>
-  <button class="active" data-tab="important"><span class="ic">⭐</span>重要</button>
+  <button class="active" data-tab="fx"><span class="ic">💱</span>匯率</button>
+  <button data-tab="important"><span class="ic">⭐</span>重要</button>
   <button data-tab="spot"><span class="ic">🌴</span>景點</button>
   <button data-tab="food"><span class="ic">🍜</span>美食</button>
   <button data-tab="sweet"><span class="ic">🍰</span>甜點咖啡</button>
@@ -366,10 +419,6 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
 const FLIGHT_API = null;
 
 const FLIGHTS = [
-  { no:"JX308", airline:"STARLUX 星宇航空",
-    from:{code:"RMQ", city:"台中"},          to:{code:"SHI", city:"下地島・宮古島"},
-    date:"2026-08-10", std:"07:20", sta:"09:40", intl:true,
-    terminal:"", gate:"", checkIn:"", belt:"" },
   { no:"JX309", airline:"STARLUX 星宇航空",
     from:{code:"SHI", city:"下地島・宮古島"}, to:{code:"RMQ", city:"台中"},
     date:"2026-08-14", std:"10:40", sta:"11:00", intl:true,
@@ -459,6 +508,59 @@ async function loadFlights(){
   renderPasses();
 }
 loadFlights();
+
+/* ================= 匯率換算（open.er-api.com，免金鑰即時） ================= */
+const FX = { rate:null };          // TWD per 1 JPY
+const FX_FALLBACK = 0.21;          // 抓取失敗時的參考值
+function fxFmt(n){
+  if(!isFinite(n)) return "";
+  return n.toLocaleString("en-US",{maximumFractionDigits:2});
+}
+function fxRecalc(src){
+  const jpyEl = document.getElementById("fxJPY");
+  const twdEl = document.getElementById("fxTWD");
+  const rate  = FX.rate || FX_FALLBACK;
+  if(src === "jpy"){
+    const v = parseFloat(jpyEl.value.replace(/,/g,""));
+    twdEl.value = isFinite(v) ? fxFmt(v * rate) : "";
+  }else{
+    const v = parseFloat(twdEl.value.replace(/,/g,""));
+    jpyEl.value = isFinite(v) ? fxFmt(v / rate) : "";
+  }
+}
+function fxQuickSet(a){
+  document.getElementById("fxJPY").value = a;
+  fxRecalc("jpy");
+}
+(function initFX(){
+  document.getElementById("fxQuick").innerHTML =
+    [1000,3000,5000,10000].map(a=>`<button onclick="fxQuickSet(${a})">¥${a.toLocaleString()}</button>`).join("");
+  document.getElementById("fxJPY").addEventListener("input",()=>fxRecalc("jpy"));
+  document.getElementById("fxTWD").addEventListener("input",()=>fxRecalc("twd"));
+})();
+async function loadFX(){
+  const rateEl = document.getElementById("fxRate");
+  const upEl   = document.getElementById("fxUpdated");
+  try{
+    const r = await fetch("https://open.er-api.com/v6/latest/JPY",{cache:"no-store"});
+    const j = await r.json();
+    const t = j.rates && j.rates.TWD;
+    if(!t) throw new Error("no rate");
+    FX.rate = t;
+    rateEl.innerHTML = `1 JPY ≈ <b>${t.toFixed(4)}</b> TWD ・ 100 JPY ≈ <b>${(t*100).toFixed(1)}</b> TWD`;
+    if(j.time_last_update_utc){
+      const d = new Date(j.time_last_update_utc);
+      upEl.textContent = "匯率更新：" + d.toLocaleString("zh-TW",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
+    }
+    // 已輸入的數字用最新匯率重算
+    if(document.getElementById("fxJPY").value) fxRecalc("jpy");
+    else if(document.getElementById("fxTWD").value) fxRecalc("twd");
+  }catch(e){
+    FX.rate = null;
+    rateEl.innerHTML = `即時匯率載入失敗，暫用參考值 1 JPY ≈ <b>${FX_FALLBACK}</b> TWD`;
+  }
+}
+loadFX();
 
 /* ================= 天氣（Open-Meteo，免金鑰即時） ================= */
 const WMO = {
