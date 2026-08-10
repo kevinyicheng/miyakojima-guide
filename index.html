@@ -170,6 +170,12 @@
     font-family:inherit;outline:none;padding:0;
   }
   .fx-input::placeholder{color:#c3ced5;}
+  .fx-clear{
+    flex:0 0 auto;width:22px;height:22px;border:0;border-radius:50%;padding:0;
+    background:#e2e9ee;color:#8a99a5;font-size:15px;line-height:1;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;
+  }
+  .fx-clear:active{background:#cfd9e0;}
   .fx-quick{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;}
   .fx-quick button{
     border:1px solid var(--line);background:var(--card);border-radius:20px;
@@ -261,11 +267,13 @@
         <span class="fx-flag">🇯🇵</span>
         <span class="fx-meta"><span class="fx-cur">JPY</span><span class="fx-cur-sub">日圓</span></span>
         <input id="fxJPY" class="fx-input" type="text" inputmode="decimal" placeholder="0" autocomplete="off">
+        <button class="fx-clear" onclick="fxClear('jpy')" aria-label="清除">×</button>
       </div>
       <div class="fx-row">
         <span class="fx-flag">🇹🇼</span>
         <span class="fx-meta"><span class="fx-cur">TWD</span><span class="fx-cur-sub">台幣</span></span>
         <input id="fxTWD" class="fx-input" type="text" inputmode="decimal" placeholder="0" autocomplete="off">
+        <button class="fx-clear" onclick="fxClear('twd')" aria-label="清除">×</button>
       </div>
       <div class="fx-quick" id="fxQuick"></div>
       <div class="fx-rate" id="fxRate">匯率載入中…</div>
@@ -532,6 +540,12 @@ function fxRecalc(src){
 function fxQuickSet(a){
   document.getElementById("fxJPY").value = a;
   fxRecalc("jpy");
+}
+function fxClear(which){
+  const el = document.getElementById(which === "jpy" ? "fxJPY" : "fxTWD");
+  el.value = "";
+  fxRecalc(which);   // 來源清空 → 另一格自動跟著清空
+  el.focus();
 }
 (function initFX(){
   document.getElementById("fxQuick").innerHTML =
