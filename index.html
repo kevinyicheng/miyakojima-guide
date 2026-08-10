@@ -303,6 +303,7 @@
     <div class="section-title">🌤️ 宮古島天氣 <span class="count">8/10–8/14</span></div>
     <div class="wx-panel">
       <div id="weather" class="weather-strip"><div class="wx-note">天氣載入中…</div></div>
+      <div class="wx-note" style="text-align:center;padding-top:6px;">天氣圖示 JMA 日本氣象廳 · 溫度/降雨 Open-Meteo</div>
     </div>
 
     <div class="section-title">🎫 我的航班</div>
@@ -573,15 +574,25 @@ const WMO = {
 };
 async function loadWeather(){
   const el = document.getElementById("weather");
-  const url = "https://api.open-meteo.com/v1/forecast?latitude=24.805&longitude=125.281"
-    +"&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max"
-    +"&timezone=Asia%2FTokyo&start_date=2026-08-10&end_date=2026-08-14";
+  // 各取所長（皆為 Open-Meteo）：
+  //  ‑ 溫度 / 降雨機率 → 預設 best_match（JMA 溫度在此點會失真成整天平溫，不採用）
+  //  ‑ 天氣圖示 weather_code → JMA 日本氣象廳（在地降雨判斷較準）
+  const BASE = "https://api.open-meteo.com/v1/forecast?latitude=24.805&longitude=125.281"
+    +"&timezone=Asia%2FTokyo&start_date=2026-08-10&end_date=2026-08-14&daily=";
+  const urlMain = BASE + "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max";
+  const urlJMA  = BASE + "weather_code&models=jma_seamless";
   try{
-    const r = await fetch(url,{cache:"no-store"});
-    const j = await r.json();
-    const d = j.daily;
+    const r = await fetch(urlMain,{cache:"no-store"});
+    const d = (await r.json()).daily;
+    // JMA 圖示：抓得到就覆蓋，抓不到就沿用預設 code（不讓天氣整塊掛掉）
+    let code = d.weather_code;
+    try{
+      const rj = await fetch(urlJMA,{cache:"no-store"});
+      const dj = (await rj.json()).daily;
+      if(dj && dj.weather_code && dj.weather_code.length === d.time.length) code = dj.weather_code;
+    }catch(_){}
     el.innerHTML = d.time.map((t,i)=>{
-      const w = WMO[d.weather_code[i]] || ["🌡️",""];
+      const w = WMO[code[i]] || ["🌡️",""];
       const dt = new Date(t+"T00:00:00");
       return `<div class="wx-day">
         <div class="d">${dt.getMonth()+1}/${dt.getDate()}</div>
